@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["Title"] = "Games";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<br />
+
+<body onload="getGames()">
+
+
+<!-- Drop down to determine what games users want to see -->
+<select id="timeline">
+    <option selected disabled>Choose one</option>
+    <option value="1">Today</option>
+    <option value="2">Upcoming Games</option>
+    <option value="3">Previous Games</option>
+</select>
+
+    <br />
+   
+<select id="teamSearch">
+    <option selected disabled>Choose one</option>
+    <option value="team1">None</option>
+    <option value="team2">Blazers</option>
+    <option value="team3">Nuggets</option>
+    <option value="team4">Warriors</option>
+    <option value="team5">Rockets</option>
+    <option value="team6">Lakers </option>
+    <option value="team7">Raptors </option>
+    <option value="team8">Celtics </option>
+    <option value="team9">Spurs </option>
+    <option value="team10">  Heat</option>
+    <option value="team11">Cavaliers </option>
+    <option value="team12">  76ers</option>
+    <option value="team13"> Bucks</option>
+    <option value="team14">Thunder</option>
+    <option value="team15"> Knicks</option>
+    <option value="team16">Jazz </option>
+    <option value="team17"> Nets </option>
+    <option value="team18"> Clippers</option>
+    <option value="team19">  Bulls</option>
+    <option value="team20"> Mavericks</option>
+    <option value="team21">Pistons </option>
+    <option value="team22"> Magic</option>
+    <option value="team23">Kings</option>
+    <option value="team24">Pacers </option>
+    <option value="team25"> Timberwolves</option>
+    <option value="team26"> Suns </option>
+    <option value="team27"> Pelicans</option>
+    <option value="team28">Hornets </option>
+    <option value="team29"> Hawks</option>
+    <option value="team30"> Wizards </option>
+    <option value="team31"> Grizzlies</option>  
+  
+</select>
+
+    <br />
+
+<input type="button" value="Get Games" onclick="getGames()">
+
+<br /> <br />
+
+<div id="games">
+    <table id="gameTable" class="table" style="width:100%">
+        <thead>
+            <tr>
+                <th>Home Team</th>
+                <th>Visiting Team</th>
+                <th>Game Time</th>
+                <th>Home Score</th>
+                <th>Visiting Score</th>
+                <th>Pick</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+
+
+<div id="test"> </div>
+
+</body>
+
+
+<script>function getFormattedDate(data) {
+        return data.substr(0, 10) + ' ' + data.substr(11, 18);
+
+    }
+
+
+    function getGames() {
+
+        var id = $("#timeline").val();
+
+        var teamSearch = document.getElementById('teamSearch');
+        var selectedTeam = teamSearch.options[teamSearch.selectedIndex].text;
+        
+        $('#gameTable').find('tbody').empty();
+
+        $.ajax({
+            url: 'https://localhost:5001/api/Game/' + id + '/' + selectedTeam,
+            type: 'GET',
+            success: function (data, request) {
+                for (var i = 0; i < data.length; i++) {
+                    var formattedDate = getFormattedDate(data[i].gameDate);
+                    var pickId = data[i].id;
+                    var markup = "<tr><td>"
+                        + data[i].homeTeam + "</td><td>"
+                        + data[i].visitingTeam + "</td><td>"
+                        + formattedDate + "</td><td>"
+                        + data[i].homeScore + "</td><td>"
+                        + data[i].visitingScore + "</td><td>"
+                        + "<select id=\"" + pickId + "\">"
+                        + "<option value='home'>" + data[i].homeTeam + "</option>"
+                        + "<option value='visit'>" + data[i].visitingTeam + "</option>"
+                        + "<option value='none' selected>None</option>"
+                        + "</select></td><td>"
+                        + "<input type='button' value='Submit' onclick='postPick(\"" + data[i].id + "\")'></td></tr>";
+
+
+                    $('#gameTable').append(markup)
+                }
+            },
+            error: function (request) {
+                // handle error
+            }
+        })
+    }
+
+    function getId(teamName, handleData) {
+
+        var id = 0;
+
+        $.ajax({
+            url: 'https://localhost:5001/api/Team/' + teamName,
+            type: 'GET',
+            success: function (data, request) {
+                handleData(data.id);
+            },
+            error: function (request) {
+                // handle error
+            }
+        })
+        return id;
+    }
+
+
+    function postPick(gameId) {
+
+
+        var selectTable = document.getElementById(gameId);
+        var team = selectTable.options[selectTable.selectedIndex].text;
+
+        getId(team, function (output) {
+            teamId = output;
+            $.ajax({
+                url: 'https://localhost:5001/api/Pick/',
+                type: 'POST',
+                data: JSON.stringify({
+                    "pick": teamId,
+                    "game": gameId
+                }),
+                success: function (data, request) {
+                    alert("success");
+                },
+                dataType: "json",
+                contentType: "application/json",
+                error: function (request) {
+                    // handle error
+                }
+            })
+            alert("You have picked the " + team);
+        });
+
+
+    }</script>

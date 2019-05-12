@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<input type="button" id="signup" value="Sign Up" onclick="signUpForm()" />
+<input type="button" id="login" value="Log In" onclick="loginForm" />
+
+
+<table id="tbl" style="width:100%">
+    <tr>
+        <th>Date</th>
+        <th>Team1</th>
+        <th>Team2</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Blazers</td>
+        <td>Suns</td>
+    </tr>
+
+</table>
+
+<a class="export" href="@Url.Action("Export", new {table="Users"})"> Export </a>
+
+<a class="database" href="@Url.Action("GetData")"> Test </a>

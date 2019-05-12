@@ -1,0 +1,41 @@
+﻿Friday, April 26th:
+
+Figure out how to export to csv from a Database DONE
+
+1. Print/display records from your database/tables - DONE
+2. Query for data/results with various parameters/filters - DONE
+3. Create a new record - DONE
+4. Delete records (soft delete function would be ideal) TO DO
+5. Update records - DONE
+6. Make use of transactions (commit & rollback) TO DO
+7. Generate reports that can be exported (excel or csv format) - DONE
+8. One query must perform an aggregation/group-by clause TO DO
+9. One query must contain a sub-query TO DO
+10. Two queries must involve joins across at least 3 tables - DONE
+11. Enforce referential integrality (Constraints) - DONE
+12. Include Database Views, Indexes
+
+
+Stored procedures?? Just have one query be a stored procedure
+Indexes - just add on the DB end easily
+Transactions???? (Quit and roll back - not sure)
+Delete records? Let's just have a delete account option
+Add query with aggregation/group-by part
+implement isFuture for the initial picks
+Put a little more dummy data in to work on front end
+Maybe export games too
+Need to use more tables!!!! Just a super simple login flow with user settings? And make it say welcome?
+Past vs. upcoming picks on picks.cshtml
+Add a pickMade column to the the Games model so that we don't show games with picks already
+
+     <div> 
+         @if (SignInManager.IsSignedIn(User)) { 
+            <div>@UserManager.GetUserName(User)</div> 
+            <form method = "post" asp-controller = "Account" aspcontroller = "Logout"> 
+               <input type = "submit" value = "Logout"/> 
+            </form> 
+         } else {  
+            <a asp-controller = "Account" asp-action = "Login">Login</a> 
+            <a asp-controller = "Account" asp-action = "Register">Register</a> 
+         } 
+      </div> 
