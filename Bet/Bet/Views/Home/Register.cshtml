@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Register";
+}
+<h1> Register </h1>
+
+
+<br />
+
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <form action="/Register" method="post">
+            <div class="fadeIn first">
+                <label for="email"><b>Email</b></label>
+                <input type="text" class="fadeIn first" id="email" placeholder="Enter Email" name="email" required>
+                <br />
+                <label for="uname"><b>Username</b></label>
+                <input type="text" id="username" class="fadeIn first" placeholder="Enter Username" name="uname" required>
+                <br />
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="password" class="fadeIn second" placeholder="Enter Password" name="psw" required>
+                <br />
+                <label for="psw"><b>Password</b></label>
+                <input type="password" id="repassword" class="fadeIn second" placeholder="Re-Enter Password" name="psw" required>
+                <br />
+                <input type="submit" class="fadeIn third"></input>
+                <input name="__RequestVerificationToken" type="hidden" value="<token_generated_here>">
+            </div>
+
+        </form>
+    </div>
+</div>

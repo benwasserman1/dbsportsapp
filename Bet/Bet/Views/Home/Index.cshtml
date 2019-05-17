@@ -1,26 +1,38 @@
-﻿@{
+﻿@model Bet.Models.LoginUser
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<p> @ViewData["Message"] </p>
 
-<input type="button" id="signup" value="Sign Up" onclick="signUpForm()" />
-<input type="button" id="login" value="Log In" onclick="loginForm" />
+<h1 style="background-color: #56baed; text-align: center"> Login </h1>
+
+<br />
+
+<div class="wrapper fadeInDown">
+    <div id="formContent">
 
 
-<table id="tbl" style="width:100%">
-    <tr>
-        <th>Date</th>
-        <th>Team1</th>
-        <th>Team2</th>
-    </tr>
-    <tr>
-        <td>1</td>
-        <td>Blazers</td>
-        <td>Suns</td>
-    </tr>
+    <form action="/Form" method="post">
+        <div class="fadeIn first">
+            <label for="uname"><b>Username</b></label>
+            <input type="text" class="fadeIn first" id="username" placeholder="Enter Username" name="uname" required>
+            <br />
+            <label for="psw"><b>Password</b></label>
+            <input type="password" style="align-self:center" class="fadeIn second" id="password" placeholder="Enter Password" name="psw" required>
+            <br />
+            <input type="submit" class="fadeIn third"></input>
+            <input name="__RequestVerificationToken" type="hidden" value="<token_generated_here>">
+            @Html.ActionLink("Register", "Register", "Home", null, new { @class = "page-scroll" })
+        </div>
+    </form>
 
-</table>
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            <a class="underlineHover" href="#">Forgot Password?</a>
+        </div>
 
-<a class="export" href="@Url.Action("Export", new {table="Users"})"> Export </a>
+    </div>
+</div>
 
-<a class="database" href="@Url.Action("GetData")"> Test </a>
+

@@ -12,7 +12,7 @@ namespace Bet.Models
         public string VisitingTeam { get; set; }
         public int HomeTeamId { get; set; }
         public int VisitingTeamId { get; set; }
-        public int isFuture { get; set; }
+        public int IsFuture { get; set; }
 
         public Game()
         {

@@ -16,26 +16,15 @@ Figure out how to export to csv from a Database DONE
 12. Include Database Views, Indexes
 
 
-Stored procedures?? Just have one query be a stored procedure
-Indexes - just add on the DB end easily
-Transactions???? (Quit and roll back - not sure)
-Delete records? Let's just have a delete account option
-Add query with aggregation/group-by part
-implement isFuture for the initial picks
-Put a little more dummy data in to work on front end
-Maybe export games too
-Need to use more tables!!!! Just a super simple login flow with user settings? And make it say welcome?
-Past vs. upcoming picks on picks.cshtml
-Add a pickMade column to the the Games model so that we don't show games with picks already
+Stored procedures?? Just have one query be a stored procedure DONE
+Need to use more tables!!!! Just a super simple login flow with user settings? And make it say welcome? DONE
+Delete records? Let's just have a delete account option DONE
+Put foreign keys in DONE
+Add query with aggregation/group-by part (implement a count picks overall and by team) on the settings page DONE
+Implement isFuture for the initial picks DONE
+Transactions???? (Quit and roll back - not sure) DONE
+Indexes - just add on the DB end easily. Shouldn't be too bad!! DONE
 
-     <div> 
-         @if (SignInManager.IsSignedIn(User)) { 
-            <div>@UserManager.GetUserName(User)</div> 
-            <form method = "post" asp-controller = "Account" aspcontroller = "Logout"> 
-               <input type = "submit" value = "Logout"/> 
-            </form> 
-         } else {  
-            <a asp-controller = "Account" asp-action = "Login">Login</a> 
-            <a asp-controller = "Account" asp-action = "Register">Register</a> 
-         } 
-      </div> 
+
+Shouldn't be able to pick for same game BASICALLY DONE, JUST NEEDS TO PERSIST
+Put a little more dummy data into the database BASICALLY DONE

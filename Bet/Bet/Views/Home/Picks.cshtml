@@ -1,38 +1,31 @@
 ﻿@{
     ViewData["Title"] = "Picks";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<h1>@ViewData["Title"]</h1>
 
 <body onload="getPicks()">
-<br />
+    <br />
 
-<!-- Populate the table to show games -->
-<input type="button" value="Get Picks" onclick="getPicks()">
-
+    <!-- Populate the table to show games  <input type="button" value="Get Picks" onclick="getPicks()"> -->
 
 
-<br /> <br />
+    <div id="picks">
+        <table id="pickTable" class="table" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Home Team</th>
+                    <th>Visiting Team</th>
+                    <th>Game Time</th>
+                    <th>Home Score</th>
+                    <th>Visiting Score</th>
+                    <th>Pick</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
 
-<div id="picks">
-    <table id="pickTable" class="table" style="width:100%">
-        <thead>
-            <tr>
-                <th>Home Team</th>
-                <th>Visiting Team</th>
-                <th>Game Time</th>
-                <th>Home Score</th>
-                <th>Visiting Score</th>
-                <th>Pick</th>
-            </tr>
-        </thead>
-        <tbody>
-
-        </tbody>
-    </table>
-</div>
-
-<a class="export" href="@Url.Action("Export", new {table="Picks"})"> Export </a>
+    <a class="export" href="@Url.Action("Export", new {table="Picks"})"> Export </a>
 
 </body>
 

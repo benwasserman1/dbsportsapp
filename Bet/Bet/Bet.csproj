@@ -10,6 +10,7 @@
     <PackageReference Include="Dapper" Version="1.60.6" />
     <PackageReference Include="MySql.Data" Version="8.0.15" />
     <PackageReference Include="ServiceStack.Text" Version="5.5.0" />
+    <PackageReference Include="Microsoft.Owin.Host.SystemWeb" Version="4.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,5 +24,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Models\UserPick.cs" />
+    <Compile Remove="Controllers\AccountController.cs" />
+    <Compile Remove="Models\LoginViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Views\Home\Login.cshtml" />
   </ItemGroup>
 </Project>

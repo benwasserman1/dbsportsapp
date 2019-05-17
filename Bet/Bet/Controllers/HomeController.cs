@@ -14,6 +14,9 @@ using System.Web;
 using System.Text;
 using ServiceStack.Text;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication;
+using System.Data;
 
 namespace Bet.Controllers
 {
@@ -21,14 +24,7 @@ namespace Bet.Controllers
     {
         private IConfiguration _config;
 
-        /*
 
-        Task<HttpResponse<MyClass>> response = Unirest.get("https://api-nba-v1.p.rapidapi.com/seasons/")
-.header("X-RapidAPI-Host", "api-nba-v1.p.rapidapi.com")
-.header("X-RapidAPI-Key", "3T9gDQGL7YmshimsdqmdiWmcKGZ0p1cdCy2jsnotuUqegFIrbi")
-.asJson();
-
-*/
         public HomeController(IConfiguration config)
         {
             _config = config;
@@ -38,23 +34,64 @@ namespace Bet.Controllers
         {
             using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
             {
-                //var data = db.Query("Select * from Users");
                 return View();
+
             }
         }
 
-        public IActionResult Export(string table)
+        public JsonResult InsertPicks([FromBody] IEnumerable<TeamPick> values)
         {
+            var t = values;
+            var user = System.Convert.ToInt32(HttpContext.Session.GetString("User"));
             using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
             {
-                // var data = db.Query("Select * from " + table);
+                if (db.State == ConnectionState.Closed)
+                    db.Open();
+                var transaction = db.BeginTransaction();
+                try
+                {
+                    for (int i = 0; i < values.Count(); ++i)
+                    {
+                        TeamPick pick = values.ElementAt(i);
+                        pick.User = user;
+                        var data = db.Query<TeamPick>(@"INSERT INTO Picks(Pick, Game, User) VALUES(@Pick, @Game, @User);
+                    Select * from Picks where Id=@id", pick).FirstOrDefault();
+
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    //Log the exception (ex)
+                    try
+                    {
+                        transaction.Rollback();
+                    }
+                    catch (Exception ex2)
+                    {
+                        Console.WriteLine("Roll back failed");
+                       // roll back failed
+                    }
+                }
+
+                return Json(values);
+            }
+        }
+
+
+        public IActionResult Export(string table)
+        {
+            var user = System.Convert.ToInt32(HttpContext.Session.GetString("User"));
+            using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
+            {
 
                 var data = db.Query<Pick>("Select P2.Id, g.Id as 'GameId', ht.Name as 'HomeTeam', vt.Name as 'VisitingTeam', g.HomeTeamId, g.VisitingTeamId, pt.Name as 'TeamPick', g.GameDate, g.HomeScore, g.VisitingScore " +
                     "FROM Games g " +
                     "INNER JOIN Teams ht ON g.HomeTeamId = ht.Id " +
                     "INNER JOIN Teams vt ON g.VisitingTeamId = vt.Id " +
                     "Inner JOIN Picks P2 ON g.Id = P2.Game " +
-                    "INNER JOIN Teams pt ON P2.Pick = pt.Id");
+                    "INNER JOIN Teams pt ON P2.Pick = pt.Id " +
+                    "WHERE User=@user", new { user });
 
                 DateTime time = DateTime.Now;
                 string stringTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
@@ -84,36 +121,31 @@ namespace Bet.Controllers
                 
         }
 
-        /*
-        public IActionResult GetData()
+        public IActionResult Register()
         {
-
-            HttpResponse<Player> response = Unirest.get("https://api-nba-v1.p.rapidapi.com/games/teamId/29")
-               .header("X-RapidAPI-Host", "api-nba-v1.p.rapidapi.com")
-               .header("X-RapidAPI-Key", "3T9gDQGL7YmshimsdqmdiWmcKGZ0p1cdCy2jsnotuUqegFIrbi")
-               .asJson<Player>();
-
-
-
-            HttpResponse<string> sample_response = Unirest.get("https://api-nba-v1.p.rapidapi.com/seasons/")
-                .header("X-RapidAPI-Host", "api-nba-v1.p.rapidapi.com")
-                .header("X-RapidAPI-Key", "3T9gDQGL7YmshimsdqmdiWmcKGZ0p1cdCy2jsnotuUqegFIrbi")
-                .asJson<string>();
-
-            var obj = JsonConvert.DeserializeObject<Dictionary<string, string>>(sample_response.Body);
-                      
-
-            Console.Write(obj);
-
+            ViewData["Message"] = "Register for Bet";
             return View();
         }
-        */
+
+        public IActionResult Login(string username, string password) {
+            return View();
+        }
+
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Rules for your NBA betting";
+            string sample = HttpContext.Session.GetString("User");
 
-            return View();
+            if (sample != null)
+            {
+                ViewData["Message"] = "Rules for your NBA betting";
+
+                return View((object)sample);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Contact()
@@ -123,52 +155,74 @@ namespace Bet.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Games()
         {
-            ViewData["Message"] = "See games and make picks";
+            string sample = HttpContext.Session.GetString("User");
 
-            using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
+            if (sample != null)
             {
-                string time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
-                var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                            "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                            "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                            " where GameDate < @time", new { time });
-                return View(data);
+                ViewData["Message"] = "See games and make picks";
+                using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
+                {
+                    string time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
+                    var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate < @time", new { time });
+                                                    
+
+                    return View(data);
+                }
             }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+           
         }
 
         public IActionResult Picks()
         {
-            ViewData["Message"] = "View my picks";
-            using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
+            string sample = HttpContext.Session.GetString("User");
+            if (sample != null)
             {
-                DateTime currTime = DateTime.Now;
-                string pastTime = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd hh:mm:ss");
-                string futureTime = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
-                var data = db.Query<Pick>("Select P2.Id, g.Id as 'GameId', ht.Name as 'HomeTeam', vt.Name as 'VisitingTeam', pt.Name as 'TeamPick', g.GameDate, g.HomeScore, g.VisitingScore, g.HomeTeamId, g.VisitingTeamId " +
-                    "FROM Games g " +
-                    "INNER JOIN Teams ht ON g.HomeTeamId = ht.Id " +
-                    "INNER JOIN Teams vt ON g.VisitingTeamId = vt.Id " +
-                    "Inner JOIN Picks P2 ON g.Id = P2.Game " +
-                    "INNER JOIN Teams pt ON P2.Pick = pt.Id " +
-                    "WHERE g.GameDate > @pastTime", new { pastTime } );
-
-                for (int i = 0; i < data.Count(); ++i)
+                ViewData["Message"] = "View my picks";
+                using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
                 {
-                    Pick pick = data.ElementAt(i);
-                    if (pick.GameDate > currTime)
-                    {
-                        pick.IsFuture = 1;
-                    }
-                    else
-                    {
-                        pick.IsFuture = 0;
-                    }
-                }
+                    DateTime currTime = DateTime.Now;
+                    string pastTime = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd hh:mm:ss");
+                    string futureTime = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
+                    var data = db.Query<Pick>("Select P2.Id, g.Id as 'GameId', ht.Name as 'HomeTeam', vt.Name as 'VisitingTeam', pt.Name as 'TeamPick', g.GameDate, g.HomeScore, g.VisitingScore, g.HomeTeamId, g.VisitingTeamId " +
+                        "FROM Games g " +
+                        "INNER JOIN Teams ht ON g.HomeTeamId = ht.Id " +
+                        "INNER JOIN Teams vt ON g.VisitingTeamId = vt.Id " +
+                        "Inner JOIN Picks P2 ON g.Id = P2.Game " +
+                        "INNER JOIN Teams pt ON P2.Pick = pt.Id " +
+                        "WHERE g.GameDate > @pastTime", new { pastTime });
 
-                return View(data);
+                    for (int i = 0; i < data.Count(); ++i)
+                    {
+                        Pick pick = data.ElementAt(i);
+                        if (pick.GameDate > currTime)
+                        {
+                            pick.IsFuture = 1;
+                        }
+                        else
+                        {
+                            pick.IsFuture = 0;
+                        }
+                    }
+
+                    return View(data);
+                }
             }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+          
         }
 
         public IActionResult Privacy()

@@ -1,7 +1,121 @@
-﻿@{
-    ViewData["Title"] = "About";
+﻿@model  string
+@{
+    ViewData["Title"] = "About and Settings";
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+<h1>@ViewData["Title"]</h1>
 
-<p>Use this area to provide additional information.</p>
+<body onload="getUser()">
+
+    <h3> Account Information </h3>
+    <div id="Name" align="center"> Name:  </div>
+    <div id="Email" align="center"> Email: </div>
+
+    <br />
+
+    <div align="center">
+        <h3> Pick information </h3>
+        <select id="teamSearch">
+            <option selected>All Teams </option>
+            <option value="team2">Blazers</option>
+            <option value="team3">Nuggets</option>
+            <option value="team4">Warriors</option>
+            <option value="team5">Rockets</option>
+            <option value="team6">Lakers </option>
+            <option value="team7">Raptors </option>
+            <option value="team8">Celtics </option>
+            <option value="team9">Spurs </option>
+            <option value="team10">  Heat</option>
+            <option value="team11">Cavaliers </option>
+            <option value="team12">  76ers</option>
+            <option value="team13"> Bucks</option>
+            <option value="team14">Thunder</option>
+            <option value="team15"> Knicks</option>
+            <option value="team16">Jazz </option>
+            <option value="team17"> Nets </option>
+            <option value="team18"> Clippers</option>
+            <option value="team19">  Bulls</option>
+            <option value="team20"> Mavericks</option>
+            <option value="team21">Pistons </option>
+            <option value="team22"> Magic</option>
+            <option value="team23">Kings</option>
+            <option value="team24">Pacers </option>
+            <option value="team25"> Timberwolves</option>
+            <option value="team26"> Suns </option>
+            <option value="team27"> Pelicans</option>
+            <option value="team28">Hornets </option>
+            <option value="team29"> Hawks</option>
+            <option value="team30"> Wizards </option>
+            <option value="team31"> Grizzlies</option>
+
+        </select>
+    </div>
+
+    <div class="wrapper">
+        <input type="button" value="Get Games" onclick="getCounts()">
+        <div id="countResult" align="center"> </div>
+    </div>
+
+    <br>
+
+
+
+    <h3> Delete account </h3>
+
+    <div class="wrapper">
+        <input type="button" id="delete" value="Delete Account" onclick="deleteUser(@Model)" />
+    </div>
+   </body>
+
+
+
+<script>
+function deleteUser(id) {
+        // ajax call update
+        $.ajax({
+            url: 'https://localhost:5001/api/user/' + id,
+            type: 'DELETE',
+            success: function (data, request) {
+                alert("Your account has been deleted");
+            },
+            error: function (request) {
+                // handle error
+            }
+        })
+    }
+
+    function getUser() {
+         $.ajax({
+            url: 'https://localhost:5001/api/user/' + @Model,
+            type: 'GET',
+            success: function (data, request) {;
+                $('#Name').append(data.name);
+                $('#Email').append(data.email);
+            },
+            error: function (request) {
+                // handle error
+            }
+        })
+    }
+
+    function getCounts() {
+
+        $('#countResult').empty();
+        var teamSearch = document.getElementById('teamSearch');
+        var selectedTeam = teamSearch.options[teamSearch.selectedIndex].text;
+
+
+        $.ajax({
+            url: 'https://localhost:5001/api/Pick/' + @Model + '/' + selectedTeam,
+            type: 'GET',
+            success: function (data, request) {
+                var markup = "<p> " + selectedTeam + " picked " + data + " times</p>";
+                $('#countResult').append(markup);
+            },
+            error: function (request) {
+                // handle error
+            }
+        })
+
+    }
+
+</script>

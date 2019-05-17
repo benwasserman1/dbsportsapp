@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Dapper;
 using MySql.Data.MySqlClient;
 using Bet.Models;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,89 +36,175 @@ namespace Bet.Controllers.ApiControllers
         [HttpGet("{timeId}/{name}")]
         public IEnumerable<Game> Get(int timeId, string name)
         {
-            using (var db = new MySqlConnection(_configuration["ConnectionStrings:DefaultConnection"]))
-            {
-                string currTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-                string time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
-
-
-                if (timeId == 1)
+                using (var db = new MySqlConnection(_configuration["ConnectionStrings:DefaultConnection"]))
                 {
-                    if (name != "Choose one")
+                    DateTime currTimeDT = DateTime.Now;
+                    string currTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                    string time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
+
+
+                    if (timeId == 1)
                     {
-                        // get date for tomorrow
-                        time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @currTime AND @time " +
-                                                "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
-                        return data;
+                        if (name != "Choose Team" && name!= "None")
+                        {
+                            // get date for tomorrow
+                            time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @currTime AND @time " +
+                                                    "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
+
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
+
+
+                            return data;
+                        }
+                        else
+                        {
+                            // get date for tomorrow
+                            time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @currTime AND @time", new { time, currTime });
+
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
+
+                            return data;
+                        }
+
+                    }
+                    else if (timeId == 2)
+                    {
+                        if (name != "Choose Team" && name != "None")
+                        {
+                            // get date from one week from today
+                            time = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @currTime AND @time " +
+                                                    "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
+
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
+
+                            return data;
+                        }
+                        else
+                        {
+                            // get date from one week from today
+                            time = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @currTime AND @time", new { time, currTime });
+
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
+
+                            return data;
+                        }
+
                     }
                     else
                     {
-                        // get date for tomorrow
-                        time = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @currTime AND @time", new { time, currTime });
-                        return data;
-                    }
+                        if (name != "Choose Team" && name != "None")
+                        {
+                            // get date from one month from today
+                            time = DateTime.Now.AddMonths(-7).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @time AND @currTime " +
+                                                    "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
 
-                }
-                else if (timeId == 2)
-                {
-                    if (name != "Choose one")
-                    {
-                        // get date from one week from today
-                        time = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @currTime AND @time " +
-                                                "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
-                        return data;
-                    }
-                    else
-                    {
-                        // get date from one week from today
-                        time = DateTime.Now.AddDays(7).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @currTime AND @time", new { time, currTime });
-                        return data;
-                    }
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
 
-                }
-                else
-                {
-                    if (name != "Choose one")
-                    {
-                        // get date from one month from today
-                        time = DateTime.Now.AddMonths(-7).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @time AND @currTime " +
-                                                "AND HomeTeamId = (select Id from Teams WHERE Teams.Name = @name)", new { time, currTime, name });
-                        return data;
+                            return data;
+                        }
+                        else
+                        {
+                            // get date from one month from today
+                            time = DateTime.Now.AddMonths(-7).ToString("yyyy-MM-dd hh:mm:ss");
+                            var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
+                                                    "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
+                                                    "inner join Teams f ON Games.VisitingTeamId = f.Id" +
+                                                    " where GameDate BETWEEN @time AND @currTime", new { time, currTime });
+
+                            for (int i = 0; i < data.Count(); ++i)
+                            {
+                                Game game = data.ElementAt(i);
+                                if (game.GameDate > currTimeDT)
+                                {
+                                    game.IsFuture = 1;
+                                }
+                                else
+                                {
+                                    game.IsFuture = 0;
+                                }
+                            }
+
+                            return data;
+                        }
+
                     }
-                    else
-                    {
-                        // get date from one month from today
-                        time = DateTime.Now.AddMonths(-7).ToString("yyyy-MM-dd hh:mm:ss");
-                        var data = db.Query<Game>("Select Games.Id, GameDate, HomeScore, VisitingScore, t.Name as 'HomeTeam', f.Name as 'VisitingTeam', HomeTeamId, VisitingTeamId " +
-                                                "from Games inner join Teams t ON Games.HomeTeamId = t.Id " +
-                                                "inner join Teams f ON Games.VisitingTeamId = f.Id" +
-                                                " where GameDate BETWEEN @time AND @currTime", new { time, currTime });
-                        return data;
-                    }
-                   
                 }
 
-            }
         }
 
         // POST api/values

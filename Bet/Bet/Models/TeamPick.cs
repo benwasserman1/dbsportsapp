@@ -6,6 +6,7 @@ namespace Bet.Models
         public int Id { get; set; }
         public int Pick { get; set; }
         public int Game { get; set;}
+        public int User { get; set; }
 
         public TeamPick()
         {
