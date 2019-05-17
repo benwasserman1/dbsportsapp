@@ -36,3 +36,8 @@ https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0
   - There are necessary foreign key constraints on all tables
 12. Include Database Views, Indexes
   - Indices are on all the tables to help speed up queries with certain where clauses
+13. Stored procedures
+  - The register query and the login authentication use stored procedures that pass in the proper parameters.
+
+## Screen recording of all features in case there is an issue with running
+https://d.pr/v/8RWJoI
