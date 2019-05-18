@@ -4,6 +4,8 @@
 Version of visual studio: 8.0.3 (build 14)
 Visual Studio 2019 
 
+Open the Bet solution and run the project to test on localhost. 
+
 ## Presentation
 https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0U50/edit?usp=sharing
 
@@ -37,7 +39,7 @@ See the home directory and the document titled Final-report.docx
 11. Enforce referential integrality (Constraints)
   - There are necessary foreign key constraints on all tables
 12. Include Database Views, Indexes
-  - Indices are on all the tables to help speed up queries with certain where clauses
+  - Indices are on all the tables to help speed up queries with certain where clauses. For example, there is an index on the name attribute for the teams table. 
 13. Stored procedures
   - The register query and the login authentication use stored procedures that pass in the proper parameters.
 
