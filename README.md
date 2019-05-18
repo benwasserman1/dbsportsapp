@@ -12,6 +12,10 @@ https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0
 ## Paper
 See the home directory and the document titled Final-report.docx
 
+
+## Screen recording of all features in case there is an issue with running
+https://d.pr/v/8RWJoI
+
 ## See the following references in order to see where each requirement is implemented
 
 1. Print/display records from your database/tables
@@ -45,5 +49,3 @@ See the home directory and the document titled Final-report.docx
 
 ## All of the DDL and DML statements used to create the tables and populate the data are in the DatabaseDDL directory
 
-## Screen recording of all features in case there is an issue with running
-https://d.pr/v/8RWJoI
