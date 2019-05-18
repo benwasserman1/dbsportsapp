@@ -2,6 +2,7 @@
 
 ## Instructions for running
 Version of visual studio: 8.0.3 (build 14)
+Visual Studio 2019 
 
 ## Presentation
 https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0U50/edit?usp=sharing

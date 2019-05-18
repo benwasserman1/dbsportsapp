@@ -62,7 +62,7 @@ using Bet.Models;
             WriteLiteral("<h1> Register </h1>\r\n\r\n\r\n<br />\r\n\r\n<div class=\"wrapper fadeInDown\">\r\n    <div id=\"formContent\">\r\n        ");
             EndContext();
             BeginContext(149, 1116, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "8c6767d3402046459ae243797e20a4ac", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "52e83ded7bca404fbf32d2b178280b85", async() => {
                 BeginContext(188, 1070, true);
                 WriteLiteral(@"
             <div class=""fadeIn first"">

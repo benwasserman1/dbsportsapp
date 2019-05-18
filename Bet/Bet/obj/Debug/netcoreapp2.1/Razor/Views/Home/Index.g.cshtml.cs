@@ -72,7 +72,7 @@ Write(ViewData["Message"]);
             WriteLiteral(" </p>\r\n\r\n<h1 style=\"background-color: #56baed; text-align: center\"> Login </h1>\r\n\r\n<br />\r\n\r\n<div class=\"wrapper fadeInDown\">\r\n    <div id=\"formContent\">\r\n\r\n\r\n    ");
             EndContext();
             BeginContext(263, 781, false);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "130c649f7cce4f33942eff7a3fe50898", async() => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("form", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "798750b4ccaf4b84a22a226711a823d4", async() => {
                 BeginContext(298, 631, true);
                 WriteLiteral(@"
         <div class=""fadeIn first"">
