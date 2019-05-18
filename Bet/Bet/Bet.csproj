@@ -26,6 +26,7 @@
     <Compile Remove="Models\UserPick.cs" />
     <Compile Remove="Controllers\AccountController.cs" />
     <Compile Remove="Models\LoginViewModel.cs" />
+    <Compile Remove="Controllers\ApiControllers\ResultsApiController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\Home\Login.cshtml" />

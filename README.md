@@ -40,5 +40,7 @@ See the home directory and the document titled Final-report.docx
 13. Stored procedures
   - The register query and the login authentication use stored procedures that pass in the proper parameters.
 
+## All of the DDL and DML statements used to create the tables and populate the data are in the DatabaseDDL directory
+
 ## Screen recording of all features in case there is an issue with running
 https://d.pr/v/8RWJoI

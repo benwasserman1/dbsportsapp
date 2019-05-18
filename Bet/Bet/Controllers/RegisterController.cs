@@ -36,7 +36,7 @@ namespace Bet.Controllers
         [HttpPost]
         public IActionResult Index(string uname, string psw, string email)
         {
-            // return Content($"Hello {uname} with the password; {psw}");
+            // pass username, password, and email to database
             using (var db = new MySqlConnection(_config["ConnectionStrings:DefaultConnection"]))
             {
                 if (db.State == ConnectionState.Closed)
