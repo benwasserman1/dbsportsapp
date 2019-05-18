@@ -7,6 +7,7 @@ Version of visual studio: 8.0.3 (build 14)
 https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0U50/edit?usp=sharing
 
 ## Paper
+See the home directory and the document titled Final-report.docx
 
 ## See the following references in order to see where each requirement is implemented
 
@@ -15,7 +16,7 @@ https://docs.google.com/presentation/d/1gu-lvGkOomA0BY5btKEcldfb4jXGg0vOIc8NAJI0
   - Bet/Controller/HomeController.cs
   - These classes query and pass data to the Views on the front end
 2. Query for data/results with various parameters/filters
-  - Picks page and Games page
+  - Picks page and Games page query and show data with filters available from the dropdown menu
 3. Create a new record
   - Register, Login, and make a pick from the Games page
 4. Delete records (soft delete function would be ideal)
